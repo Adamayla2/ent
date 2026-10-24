@@ -1,0 +1,63 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'iq.adam.ent.student'
+    compileSdk 36
+    defaultConfig {
+        // Set the final owner-controlled application ID BEFORE the first Play upload.
+        applicationId 'iq.adam.ent.student'
+        minSdk 26
+        targetSdk 36
+        versionCode 20000
+        versionName '2.0.0'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            // Configure owner-managed upload signing in Android Studio. No keys are shipped.
+        }
+    }
+    sourceSets {
+        main.assets.srcDir(layout.buildDirectory.dir('generated/studentAssets').get().asFile)
+    }
+}
+
+def generatedAssets = layout.buildDirectory.dir('generated/studentAssets')
+def publicConfigFile = rootProject.file('public-config.json')
+def bundleStudentAssets = tasks.register('bundleStudentAssets', Sync) {
+    from(rootProject.file('../student')) {
+        include '**/*.html', '**/*.js', '**/*.css', '**/*.json', '**/*.png', '**/*.svg', '**/*.woff2'
+        exclude 'config.js', 'service-worker.js', '**/node_modules/**', '**/data/**'
+    }
+    into(generatedAssets)
+    inputs.file(publicConfigFile)
+    doFirst {
+        if (!publicConfigFile.exists()) throw new GradleException('Missing public-config.json. Run prepare-config.ps1 with a public API origin and public JWK. See README.md.')
+        def conf = new JsonSlurper().parse(publicConfigFile)
+        def api = new URI(conf.apiBaseUrl?.toString() ?: '')
+        if (api.scheme != 'https' || !api.host || api.userInfo || api.query || api.fragment || (api.path && api.path != '/')) throw new GradleException('apiBaseUrl must be an HTTPS origin without path, credentials, query, or fragment.')
+        def key = conf.publicKey
+        if (!(key instanceof Map) || key.kty != 'EC' || key.crv != 'P-256' || !(key.x ==~ /[A-Za-z0-9_-]{43}/) || !(key.y ==~ /[A-Za-z0-9_-]{43}/) || key.containsKey('d')) throw new GradleException('A public P-256 JWK (x/y, no private d) must be pinned before bundling.')
+        if (conf.distribution != 'play-consumption') throw new GradleException('Android must use play-consumption distribution.')
+        if (!(conf.paymentMode in ['disabled', 'sandbox'])) throw new GradleException('Unconfigured live payment mode is prohibited.')
+    }
+    doLast {
+        def conf = new JsonSlurper().parse(publicConfigFile)
+        def safe = [apiBaseUrl:conf.apiBaseUrl, websiteUrl:conf.websiteUrl ?: '', publicKey:conf.publicKey, paymentMode:conf.paymentMode, distribution:'play-consumption']
+        def target = generatedAssets.get().asFile
+        new File(target, 'config.js').text = 'window.ADAM_CONFIG = Object.freeze(' + JsonOutput.toJson(safe) + ');\n'
+        new File(target, 'native-public.json').text = JsonOutput.toJson([apiBaseUrl:conf.apiBaseUrl])
+    }
+}
+tasks.named('preBuild').configure { dependsOn(bundleStudentAssets) }
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.18.0'
+}

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#102d49">
+  <title>Adam ENT | Subscriptions</title>
+  <link rel="icon" href="/brand.png">
+  <link rel="stylesheet" href="/site.css">
+  <script src="/site.js" defer></script>
+</head>
+<body data-page="home">
+  <a class="skip" href="#main">Skip to content</a>
+  <div id="mode-banner" class="mode-banner" role="status">Checking payment availability. Do not enter card details.</div>
+  <header class="header wrap">
+    <a class="brand" href="/"><img src="/brand.png" alt="" width="52" height="52"><span dir="ltr">Adam ENT<small>ENT MASTER BANK</small></span></a>
+    <nav aria-label="Main navigation"><a href="#plans">Plans</a><a href="#account">My account</a><a href="/student/" class="button small secondary">Open student app</a></nav>
+  </header>
+  <main id="main" class="wrap">
+    <section class="hero">
+      <div><p class="eyebrow">ENT question bank</p><h1>A clear path to<br><span>better preparation.</span></h1><p class="lead">One account for your questions, practice exams and progress. Choose your plan, then download the question bank in the student app and study offline.</p><a class="button" href="#plans">Explore plans <span aria-hidden="true">→</span></a></div>
+      <div class="hero-card"><img src="/brand.png" alt="Adam ENT logo" width="150" height="150"><p>Study. Practice. Progress.</p><div class="feature-row"><span>Your own account</span><span>Up to two devices</span><span>In-app download</span></div></div>
+    </section>
+    <section id="plans" class="section" aria-labelledby="plans-title"><div class="section-head"><div><p class="eyebrow">A plan that fits your schedule</p><h2 id="plans-title">Choose your subscription</h2></div><p>Prepaid access for a fixed term.<br>No automatic charges or renewal.</p></div><p id="plans-status" role="status">Loading plans from the server…</p><div id="plan-list" class="plans"></div><p class="fine">Access to paid content stops when your subscription expires. Your progress and notes stay on your device for when you renew. Offline access requires periodic license renewal.</p></section>
+    <section id="account" class="section account-layout" aria-labelledby="account-title">
+      <div><p class="eyebrow">Start with your account</p><h2 id="account-title">Student account</h2><p class="muted">Use the same email address on the website and in the app. Payment and subscription status are verified by the server.</p><ol class="steps"><li>Create an account or sign in.</li><li>Choose a plan and complete your order on this website.</li><li>Sign in to the app and download your questions.</li></ol></div>
+      <div class="panel">
+        <div id="auth-panel">
+          <div class="tabs" aria-label="Account form"><button id="login-tab" type="button" class="active" aria-pressed="true">Sign in</button><button id="register-tab" type="button" aria-pressed="false">Create account</button></div>
+          <form id="login-form"><div class="field"><label for="login-email">Email address</label><input id="login-email" name="email" type="email" autocomplete="username" dir="ltr" maxlength="254" required></div><div class="field"><label for="login-password">Password</label><input id="login-password" name="password" type="password" autocomplete="current-password" required minlength="10" maxlength="256"></div><button class="button full" type="submit">Sign in</button></form>
+          <form id="register-form" hidden><div class="field"><label for="register-name">Name</label><input id="register-name" name="name" type="text" autocomplete="name" minlength="2" maxlength="100" required></div><div class="field"><label for="register-email">Email address</label><input id="register-email" name="email" type="email" autocomplete="username" dir="ltr" maxlength="254" required></div><div class="field"><label for="register-password">Password</label><input id="register-password" name="password" type="password" autocomplete="new-password" minlength="10" maxlength="256" required aria-describedby="password-help"><small id="password-help">At least 10 characters. Choose a password unique to this account.</small></div><button class="button full" type="submit">Create account</button></form>
+          <p class="fine">Contact the service administrator to reset your password in this version. Automated recovery emails are not available.</p>
+        </div>
+        <div id="signed-panel" hidden><span class="pill">Student account</span><h3 id="user-name"></h3><p id="user-email" dir="ltr"></p><div class="entitlement"><strong id="subscription-status"></strong><span id="subscription-expiry"></span></div><div class="actions"><button class="button secondary" id="refresh-account" type="button">Refresh subscription</button><a class="button" href="/student/">Open student app</a><button class="text-button" id="logout" type="button">Sign out</button></div><h4>Registered devices</h4><p class="fine">Up to two devices per account. The website and app on the same phone may count as separate devices.</p><ul id="devices" class="devices"></ul></div>
+        <p id="auth-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+  <footer class="footer wrap"><p dir="ltr">Adam ENT · Student subscriptions</p><p>Manage your account and subscription here. Study in the student app.</p><p><a href="/account-delete.html">Delete account</a> · <a href="/student/privacy.html">Privacy policy</a></p></footer>
+</body>
+</html>
